@@ -6,8 +6,11 @@ import FallbackScreen from './components/FallbackScreen.vue'
 import ModeSwitch from './components/ModeSwitch.vue'
 import ControlsSidebar from './components/ControlsSidebar.vue'
 import PerformanceMode from './components/PerformanceMode.vue'
+import StatsPanel from './components/StatsPanel.vue'
 import { MAP_KEY, MAP_READY_KEY } from './composables/useMapbox'
 import { createPointsSource, POINTS_SOURCE_KEY } from './composables/usePointsSource'
+import { useFps } from './composables/useFps'
+import { createMetrics, measureTimeToVisible, METRICS_KEY } from './composables/useMetrics'
 import { generatePoints } from './lib/generatePoints'
 import type { AppMode, RendererKind, SourceKind } from './lib/types'
 
@@ -31,11 +34,27 @@ const renderer = ref<RendererKind>('webgl')
 const pointsSource = createPointsSource(map)
 provide(POINTS_SOURCE_KEY, pointsSource)
 
+const metrics = createMetrics()
+provide(METRICS_KEY, metrics)
+
+const { fps, worstFrameMs, measuring } = useFps(map, mapReady)
+
+// While measuring in performance mode, keep the current branch's last FPS.
+watch(fps, (v) => {
+  if (v !== null && mode.value === 'performance') {
+    metrics.recordFps(renderer.value, v, worstFrameMs.value ?? 0)
+  }
+})
+
 const collection = computed(() => generatePoints({ count: count.value }))
 
-watch([mapReady, collection], ([ready]) => {
+watch([mapReady, collection], async ([ready]) => {
   if (!ready) return
   pointsSource.setData(collection.value)
+  if (mode.value === 'performance' && renderer.value === 'webgl' && map.value) {
+    const ms = await measureTimeToVisible(map.value)
+    if (ms !== null) metrics.recordTime('webgl', ms)
+  }
 }, { immediate: true })
 
 function switchMode(next: AppMode) {
@@ -65,6 +84,13 @@ function switchMode(next: AppMode) {
         <FallbackScreen v-if="fatal" :reason="fatal" />
         <template v-else>
           <MapCanvas @fatal="fatal = 'map-error'" />
+          <StatsPanel
+            :mode="mode"
+            :fps="fps"
+            :worst-frame-ms="worstFrameMs"
+            :measuring="measuring"
+            :results="metrics.results"
+          />
           <template v-if="mapReady">
             <PerformanceMode v-if="mode === 'performance'" :renderer="renderer" />
           </template>
