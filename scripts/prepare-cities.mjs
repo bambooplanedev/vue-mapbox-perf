@@ -18,7 +18,7 @@ const features = raw.features
     properties: {
       name: f.properties.name,
       country: f.properties.adm0name ?? '',
-      population: Number(f.properties.pop_max) || 0,
+      population: Math.max(0, Number(f.properties.pop_max) || 0),
     },
   }))
 
