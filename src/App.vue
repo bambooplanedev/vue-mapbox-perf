@@ -10,6 +10,7 @@ import StatsPanel from './components/StatsPanel.vue'
 import { MAP_KEY, MAP_READY_KEY } from './composables/useMapbox'
 import { createPointsSource, POINTS_SOURCE_KEY } from './composables/usePointsSource'
 import { useFps } from './composables/useFps'
+import { useStressTest } from './composables/useStressTest'
 import { createMetrics, measureTimeToVisible, METRICS_KEY } from './composables/useMetrics'
 import { generatePoints } from './lib/generatePoints'
 import type { AppMode, RendererKind, SourceKind } from './lib/types'
@@ -38,6 +39,7 @@ const metrics = createMetrics()
 provide(METRICS_KEY, metrics)
 
 const { fps, worstFrameMs, measuring } = useFps(map, mapReady)
+const stress = useStressTest(map)
 
 // While measuring in performance mode, keep the current branch's last FPS.
 watch(fps, (v) => {
@@ -58,6 +60,7 @@ watch([mapReady, collection], async ([ready]) => {
 }, { immediate: true })
 
 function switchMode(next: AppMode) {
+  stress.stop()
   map.value?.stop() // interrupt any camera flight before layers change hands
   mode.value = next
 }
@@ -79,7 +82,14 @@ function switchMode(next: AppMode) {
         @update:source-kind="sourceKind = $event"
         @update:count="count = $event"
         @update:renderer="renderer = $event"
-      />
+      >
+        <section>
+          <h3>Stress test</h3>
+          <button class="stress" :class="{ active: stress.active.value }" @click="stress.toggle()">
+            {{ stress.active.value ? 'Stop orbit' : 'Start orbit' }}
+          </button>
+        </section>
+      </ControlsSidebar>
       <main class="app-main">
         <FallbackScreen v-if="fatal" :reason="fatal" />
         <template v-else>
@@ -109,4 +119,10 @@ function switchMode(next: AppMode) {
 .tagline { margin-left: auto; color: var(--bp-green); font-size: 0.85rem; }
 .app-body { display: flex; flex: 1; min-height: 0; }
 .app-main { position: relative; flex: 1; }
+.app-body section h3 { margin: 0 0 6px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--bp-green); }
+.stress {
+  width: 100%; padding: 8px; border-radius: 8px; font-weight: 700;
+  border: 1px solid var(--bp-green); background: transparent; color: var(--bp-green);
+}
+.stress.active { background: var(--bp-green-deep); color: var(--bp-white); }
 </style>
