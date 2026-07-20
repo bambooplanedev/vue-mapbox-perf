@@ -33,3 +33,11 @@ button {
   background: var(--bp-green);
   border: 1px solid var(--bp-green-deep);
 }
+
+/* Mapbox popup content has a white background but sets no text color, so it
+   inherits body's off-white (--bp-offwhite) — near-white text on white. Force
+   a readable dark color. Same global-CSS reason as .dom-marker: the popup is
+   attached outside the Vue tree. */
+.mapboxgl-popup-content {
+  color: var(--bp-charcoal);
+}

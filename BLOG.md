@@ -1,6 +1,6 @@
 # Why 50,000 markers don't need 50,000 DOM nodes
 
-*A write-up of what [this demo](https://virakachurovska.github.io/vue-mapbox-perf/) actually measures.*
+*A write-up of what [this demo](https://bambooplanedev.github.io/vue-mapbox-perf/) actually measures.*
 
 ## The problem with one node per marker
 

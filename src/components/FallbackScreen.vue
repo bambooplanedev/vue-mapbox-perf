@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineProps<{ reason: 'no-token' | 'map-error' }>()
 const isDev = import.meta.env.DEV
-const repoUrl = 'https://github.com/virakachurovska/vue-mapbox-perf'
+const repoUrl = 'https://github.com/bambooplanedev/vue-mapbox-perf'
 </script>
 
 <template>

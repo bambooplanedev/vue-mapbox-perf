@@ -2,7 +2,7 @@
 
 **Thousands of map markers at interactive framerates — one WebGL layer instead of one DOM node per marker.**
 
-Live demo: https://virakachurovska.github.io/vue-mapbox-perf/
+Live demo: https://bambooplanedev.github.io/vue-mapbox-perf/
 
 <!-- GIF: performance mode, DOM vs WebGL toggle during stress orbit -->
 <!-- GIF: clustering mode, cluster expansion -->
@@ -23,7 +23,7 @@ Full write-up: [BLOG.md](./BLOG.md)
 ## Quick start
 
 ```bash
-git clone https://github.com/virakachurovska/vue-mapbox-perf.git
+git clone https://github.com/bambooplanedev/vue-mapbox-perf.git
 cd vue-mapbox-perf
 cp .env.example .env   # put your token inside
 npm install
