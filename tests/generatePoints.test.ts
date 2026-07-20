@@ -12,6 +12,13 @@ describe('mulberry32', () => {
       expect(v).toBeLessThan(1)
     }
   })
+
+  it('pins golden values for seed 42 regression detection', () => {
+    const rng = mulberry32(42)
+    expect(rng()).toBeCloseTo(0.6011037519201636, 10)
+    expect(rng()).toBeCloseTo(0.44829055899754167, 10)
+    expect(rng()).toBeCloseTo(0.8524657934904099, 10)
+  })
 })
 
 describe('generatePoints', () => {
@@ -39,5 +46,12 @@ describe('generatePoints', () => {
       expect(lat).toBeGreaterThanOrEqual(-85)
       expect(lat).toBeLessThanOrEqual(85)
     }
+  })
+
+  it('pins golden values for seed 42 regression detection', () => {
+    const fc = generatePoints({ count: 1, seed: 42 })
+    const [lng, lat] = fc.features[0].geometry.coordinates
+    expect(lng).toBeCloseTo(15.007043146807481, 6)
+    expect(lat).toBeCloseTo(58.818778088603196, 6)
   })
 })
