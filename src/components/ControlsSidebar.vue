@@ -81,4 +81,13 @@ const fmt = (n: number) => n.toLocaleString('en-US')
   margin: 0; padding: 8px; font-size: 0.8rem; border-radius: 6px;
   background: var(--bp-surface); border-left: 3px solid var(--bp-border);
 }
+
+@media (max-width: 700px) {
+  .sidebar {
+    width: 100%; max-height: 200px; order: 2;
+    border-right: none; border-top: 1px solid var(--bp-border);
+    flex-direction: row; flex-wrap: wrap; gap: 12px;
+  }
+  .sidebar section { min-width: 150px; }
+}
 </style>

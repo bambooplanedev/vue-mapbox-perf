@@ -144,4 +144,11 @@ function switchMode(next: AppMode) {
   border: 1px solid var(--bp-green); background: transparent; color: var(--bp-green);
 }
 .stress.active { background: var(--bp-green-deep); color: var(--bp-white); }
+
+@media (max-width: 700px) {
+  .app-body { flex-direction: column; }
+  .app-header { flex-wrap: wrap; gap: 8px; }
+  .tagline { margin-left: 0; width: 100%; }
+  .app-main { min-height: 0; order: 1; flex: 1 1 auto; }
+}
 </style>
