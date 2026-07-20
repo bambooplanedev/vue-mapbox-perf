@@ -2,7 +2,7 @@
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { onMounted, onUnmounted, ref } from 'vue'
-import { useMap } from '../composables/useMapbox'
+import { useMap } from '../composables/useMap'
 import { DEFAULT_CENTER } from '../lib/generatePoints'
 
 const emit = defineEmits<{ fatal: [message: string] }>()

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { inject, onMounted, onUnmounted } from 'vue'
-import { useMap } from '../composables/useMapbox'
+import { useMap } from '../composables/useMap'
 import { POINTS_SOURCE_KEY, SOURCE_ID } from '../composables/usePointsSource'
 import { attachMarkerInteraction } from '../composables/useMarkerInteraction'
+import { MAP_COLORS } from '../lib/mapColors'
 
 const { map } = useMap()
 const source = inject(POINTS_SOURCE_KEY)!
@@ -22,10 +23,10 @@ onMounted(() => {
     source: SOURCE_ID,
     filter: ['has', 'point_count'],
     paint: {
-      'circle-color': ['step', ['get', 'point_count'], '#4CAF50', 100, '#2f6b2f', 750, '#256325'],
+      'circle-color': ['step', ['get', 'point_count'], MAP_COLORS.green, 100, MAP_COLORS.greenForest, 750, MAP_COLORS.greenDeep],
       'circle-radius': ['step', ['get', 'point_count'], 15, 100, 22, 750, 30],
       'circle-stroke-width': 1,
-      'circle-stroke-color': '#f7f7f5',
+      'circle-stroke-color': MAP_COLORS.offwhite,
     },
   })
   m.addLayer({
@@ -38,7 +39,7 @@ onMounted(() => {
       'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'],
       'text-size': 12,
     },
-    paint: { 'text-color': '#f7f7f5' },
+    paint: { 'text-color': MAP_COLORS.offwhite },
   })
   m.addLayer({
     id: 'unclustered-point',
@@ -46,10 +47,10 @@ onMounted(() => {
     source: SOURCE_ID,
     filter: ['!', ['has', 'point_count']],
     paint: {
-      'circle-color': '#4CAF50',
+      'circle-color': MAP_COLORS.green,
       'circle-radius': 5,
       'circle-stroke-width': 1,
-      'circle-stroke-color': '#256325',
+      'circle-stroke-color': MAP_COLORS.greenDeep,
     },
   })
 

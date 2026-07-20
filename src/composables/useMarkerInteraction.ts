@@ -1,6 +1,7 @@
 import { Popup, type GeoJSONSource, type Map as MapboxMap, type MapMouseEvent } from 'mapbox-gl'
 import type { Point } from 'geojson'
 import { SOURCE_ID } from './usePointsSource'
+import { isCity, type PointProps } from '../lib/types'
 
 export interface InteractionLayers {
   clusterLayer: string
@@ -34,11 +35,12 @@ export function attachMarkerInteraction(m: MapboxMap, layers: InteractionLayers)
     const f = e.features?.[0]
     if (!f) return
     const coords = (f.geometry as Point).coordinates as [number, number]
-    const p = f.properties ?? {}
-    const html =
-      'population' in p
-        ? `<strong>${escapeHtml(String(p.name))}</strong><br>${escapeHtml(String(p.country))}<br>pop. ${Number(p.population).toLocaleString('en-US')}`
-        : `point #${Number(p.id)}<br>${coords[0].toFixed(3)}, ${coords[1].toFixed(3)}`
+    // Mapbox returns untyped feature properties; cast to the app's union so
+    // isCity() can narrow which shape we actually have.
+    const p = (f.properties ?? {}) as PointProps
+    const html = isCity(p)
+      ? `<strong>${escapeHtml(p.name)}</strong><br>${escapeHtml(p.country)}<br>pop. ${p.population.toLocaleString('en-US')}`
+      : `point #${p.id}<br>${coords[0].toFixed(3)}, ${coords[1].toFixed(3)}`
     popup?.remove()
     popup = new Popup({ offset: 12 }).setLngLat(coords).setHTML(html).addTo(m)
   }

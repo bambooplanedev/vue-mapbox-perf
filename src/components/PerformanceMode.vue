@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { inject, onMounted, onUnmounted, watch } from 'vue'
-import { useMap } from '../composables/useMapbox'
+import { useMap } from '../composables/useMap'
 import { POINTS_SOURCE_KEY, SOURCE_ID } from '../composables/usePointsSource'
 import { METRICS_KEY } from '../composables/useMetrics'
 import { useDomMarkers } from '../composables/useDomMarkers'
+import { MAP_COLORS } from '../lib/mapColors'
 import type { RendererKind } from '../lib/types'
 
 const props = defineProps<{ renderer: RendererKind }>()
@@ -24,10 +25,10 @@ function addCircleLayer() {
     source: SOURCE_ID,
     paint: {
       'circle-radius': 4,
-      'circle-color': '#4CAF50',
+      'circle-color': MAP_COLORS.green,
       'circle-opacity': 0.85,
       'circle-stroke-width': 1,
-      'circle-stroke-color': '#256325',
+      'circle-stroke-color': MAP_COLORS.greenDeep,
     },
   })
 }

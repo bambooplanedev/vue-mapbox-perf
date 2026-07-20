@@ -1,15 +1,17 @@
 import { onUnmounted, type ShallowRef } from 'vue'
 import { Marker, type Map as MapboxMap } from 'mapbox-gl'
-import { DOM_CAP, type PointsCollection } from '../lib/types'
+import { DOM_CAP, isCity, type PointProps, type PointsCollection } from '../lib/types'
+
+const population = (p: PointProps) => (isCity(p) ? p.population : 0)
 
 function pickFeatures(fc: PointsCollection) {
   const feats = fc.features
   if (feats.length <= DOM_CAP) return feats
   // Cities: top-N by population is deterministic and geographically sensible.
   // Synthetic data has no population — take the first N (generation is seeded).
-  if (feats[0]?.properties && 'population' in feats[0].properties) {
+  if (feats[0] && isCity(feats[0].properties)) {
     return [...feats]
-      .sort((a, b) => (b.properties as { population: number }).population - (a.properties as { population: number }).population)
+      .sort((a, b) => population(b.properties) - population(a.properties))
       .slice(0, DOM_CAP)
   }
   return feats.slice(0, DOM_CAP)

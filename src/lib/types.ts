@@ -17,6 +17,11 @@ export interface SyntheticProps {
 export type PointProps = CityProps | SyntheticProps
 export type PointsCollection = FeatureCollection<Point, PointProps>
 
+/** Narrows point properties to a city — cities carry a population, synthetic points don't. */
+export function isCity(p: PointProps): p is CityProps {
+  return 'population' in p
+}
+
 export const EMPTY_COLLECTION: PointsCollection = {
   type: 'FeatureCollection',
   features: [],
