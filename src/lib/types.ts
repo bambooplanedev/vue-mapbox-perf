@@ -21,3 +21,6 @@ export const EMPTY_COLLECTION: PointsCollection = {
   type: 'FeatureCollection',
   features: [],
 }
+
+/** Hard cap for the DOM-marker branch — the cap itself is part of the demo's narrative. */
+export const DOM_CAP = 2000
