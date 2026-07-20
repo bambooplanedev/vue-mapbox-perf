@@ -7,6 +7,7 @@ const props = defineProps<{
   sourceKind: SourceKind
   count: number
   renderer: RendererKind
+  dataError?: boolean
 }>()
 const emit = defineEmits<{
   'update:sourceKind': [v: SourceKind]
@@ -33,6 +34,10 @@ const fmt = (n: number) => n.toLocaleString('en-US')
       <label><input type="radio" value="synthetic" :checked="sourceKind === 'synthetic'" @change="emit('update:sourceKind', 'synthetic')" /> Synthetic</label>
       <label><input type="radio" value="cities" :checked="sourceKind === 'cities'" @change="emit('update:sourceKind', 'cities')" /> World cities</label>
     </section>
+
+    <p v-if="dataError" class="banner">
+      Couldn't load the cities dataset — switched back to synthetic data.
+    </p>
 
     <section v-if="sourceKind === 'synthetic'">
       <h3>Points: {{ fmt(renderer === 'dom' && mode === 'performance' ? Math.min(localCount, DOM_CAP) : localCount) }}</h3>
@@ -71,5 +76,9 @@ const fmt = (n: number) => n.toLocaleString('en-US')
 .badge {
   margin: 8px 0 0; padding: 8px; font-size: 0.8rem; border-radius: 6px;
   background: var(--bp-surface); border-left: 3px solid var(--bp-green-forest);
+}
+.banner {
+  margin: 0; padding: 8px; font-size: 0.8rem; border-radius: 6px;
+  background: var(--bp-surface); border-left: 3px solid var(--bp-border);
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, provide, ref, shallowRef, watch } from 'vue'
+import { provide, ref, shallowRef, watch } from 'vue'
 import type { Map as MapboxMap } from 'mapbox-gl'
 import MapCanvas from './components/MapCanvas.vue'
 import FallbackScreen from './components/FallbackScreen.vue'
@@ -14,7 +14,8 @@ import { useFps } from './composables/useFps'
 import { useStressTest } from './composables/useStressTest'
 import { createMetrics, measureTimeToVisible, METRICS_KEY } from './composables/useMetrics'
 import { generatePoints } from './lib/generatePoints'
-import type { AppMode, RendererKind, SourceKind } from './lib/types'
+import { loadCities } from './lib/loadCities'
+import { EMPTY_COLLECTION, type AppMode, type PointsCollection, type RendererKind, type SourceKind } from './lib/types'
 
 // shallowRef is mandatory: deep reactivity on a Map instance corrupts its
 // internals and tanks performance.
@@ -49,7 +50,22 @@ watch(fps, (v) => {
   }
 })
 
-const collection = computed(() => generatePoints({ count: count.value }))
+const dataError = ref(false)
+const collection = shallowRef<PointsCollection>(EMPTY_COLLECTION)
+
+watch([sourceKind, count], async ([kind]) => {
+  if (kind === 'synthetic') {
+    collection.value = generatePoints({ count: count.value })
+    return
+  }
+  try {
+    dataError.value = false
+    collection.value = await loadCities()
+  } catch {
+    dataError.value = true
+    sourceKind.value = 'synthetic' // fall back — the demo must stay alive
+  }
+}, { immediate: true })
 
 watch([mapReady, collection], async ([ready]) => {
   if (!ready) return
@@ -80,6 +96,7 @@ function switchMode(next: AppMode) {
         :source-kind="sourceKind"
         :count="count"
         :renderer="renderer"
+        :data-error="dataError"
         @update:source-kind="sourceKind = $event"
         @update:count="count = $event"
         @update:renderer="renderer = $event"
