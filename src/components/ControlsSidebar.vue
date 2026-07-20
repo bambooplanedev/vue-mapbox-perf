@@ -70,6 +70,6 @@ const fmt = (n: number) => n.toLocaleString('en-US')
 .sidebar input[type='range'] { width: 100%; accent-color: var(--bp-green); }
 .badge {
   margin: 8px 0 0; padding: 8px; font-size: 0.8rem; border-radius: 6px;
-  background: var(--bp-surface); border-left: 3px solid var(--bp-orange);
+  background: var(--bp-surface); border-left: 3px solid var(--bp-green-forest);
 }
 </style>
