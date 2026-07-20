@@ -23,3 +23,13 @@ button {
   font-family: inherit;
   cursor: pointer;
 }
+
+/* Marker elements are attached by Mapbox outside any Vue component tree, so
+   this must live in global CSS — scoped component styles cannot reach them. */
+.dom-marker {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bp-green);
+  border: 1px solid var(--bp-green-deep);
+}
