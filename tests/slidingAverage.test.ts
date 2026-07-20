@@ -20,6 +20,7 @@ describe('createFrameWindow', () => {
     expect(s).not.toBeNull()
     expect(s!.fps).toBeCloseTo(60, 0)
     expect(s!.worstFrameMs).toBeCloseTo(1000 / 60, 1)
+    expect(s!.sampleCount).toBe(59)
   })
 
   it('reports the worst frame in the window', () => {
@@ -38,6 +39,7 @@ describe('createFrameWindow', () => {
     const s = win.stats()!
     expect(s.fps).toBeCloseTo(100, 0)
     expect(s.worstFrameMs).toBe(10)
+    expect(s.sampleCount).toBe(6)
   })
 
   it('reset clears all samples', () => {
