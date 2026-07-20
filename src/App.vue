@@ -6,6 +6,7 @@ import FallbackScreen from './components/FallbackScreen.vue'
 import ModeSwitch from './components/ModeSwitch.vue'
 import ControlsSidebar from './components/ControlsSidebar.vue'
 import PerformanceMode from './components/PerformanceMode.vue'
+import ClusteringMode from './components/ClusteringMode.vue'
 import StatsPanel from './components/StatsPanel.vue'
 import { MAP_KEY, MAP_READY_KEY } from './composables/useMapbox'
 import { createPointsSource, POINTS_SOURCE_KEY } from './composables/usePointsSource'
@@ -103,6 +104,7 @@ function switchMode(next: AppMode) {
           />
           <template v-if="mapReady">
             <PerformanceMode v-if="mode === 'performance'" :renderer="renderer" />
+            <ClusteringMode v-else-if="mode === 'clustering'" />
           </template>
         </template>
       </main>
